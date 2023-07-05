@@ -19,7 +19,7 @@ internal static class Data
     };
 
     private static DataContainer _dataContainer = null!;
-    public static Dictionary<string, Target> Targets => _dataContainer.Targets!;
+    public static IEnumerable<ITarget> Targets => _dataContainer.Targets!.Values;
 
     public static void EnsureCreated()
     {
@@ -29,18 +29,18 @@ internal static class Data
 
     public static void Add(Target target)
     {
-        if (Targets.ContainsKey(target.NormalizedName))
+        if (_dataContainer.Targets!.ContainsKey(target.NormalizedName))
             throw new InvalidOperationException("Target already exists.");
 
-        Targets[target.NormalizedName] = target;
+        _dataContainer.Targets![target.NormalizedName] = target;
     }
 
-    public static void Remove(Target target)
+    public static void Remove(ITarget target)
     {
-        if (!Targets.ContainsKey(target.NormalizedName))
+        if (!_dataContainer.Targets!.ContainsKey(target.NormalizedName))
             throw new InvalidOperationException("Target does not exist.");
 
-        Targets.Remove(target.NormalizedName);
+        _dataContainer.Targets!.Remove(target.NormalizedName);
     }
 
     public static void SaveChanges()

@@ -13,7 +13,7 @@ internal sealed class PhysicalAddressJsonConverter : JsonConverter<PhysicalAddre
 
         return macAddress;
 
-    }
+    }  
 
     public override void Write(Utf8JsonWriter writer, PhysicalAddress value, JsonSerializerOptions options)
     {

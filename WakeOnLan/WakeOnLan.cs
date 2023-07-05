@@ -5,30 +5,33 @@ namespace WakeOnLan;
 
 internal static class WakeOnLan
 {
-    public static void Wake(this Target target)
+    public static void Wake(this ITarget target)
     {
         Console.WriteLine("Sending wake...");
-        SendWake(target);
-        Console.WriteLine("Wake sent.");
-    }
 
-    private static void SendWake(Target target)
-    {
         try
         {
-            var header = Enumerable.Repeat(byte.MaxValue, 6);
-            var address = Dns.GetHostAddresses(target.Host).First();
-            var data = Enumerable.Repeat(target.MacAddress.GetAddressBytes(), 16).SelectMany(mac => mac);
-
-            var magicPacket = header.Concat(data).ToArray();
-
-            using var client = new UdpClient();
-
-            client.Send(magicPacket, magicPacket.Length, new IPEndPoint(address, target.Port));
+            SendWake(target);
         }
         catch (Exception e)
         {
             Console.WriteLine(e.Message);
+            return;
         }
+
+        Console.WriteLine("Wake sent.");
+    }
+
+    private static void SendWake(ITarget target)
+    {
+        var header = Enumerable.Repeat(byte.MaxValue, 6);
+        var address = Dns.GetHostAddresses(target.Host).First();
+        var data = Enumerable.Repeat(target.MacAddress.GetAddressBytes(), 16).SelectMany(x => x);
+
+        var magicPacket = header.Concat(data).ToArray();
+
+        using var client = new UdpClient();
+
+        client.Send(magicPacket, magicPacket.Length, new IPEndPoint(address, target.Port));
     }
 }

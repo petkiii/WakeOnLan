@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 
 namespace WakeOnLan;
 
-internal class Target
+internal class Target : ITarget
 {
     [JsonPropertyName("normalizedName")]
     public string NormalizedName { get; set; } = null!;
@@ -22,4 +22,13 @@ internal class Target
     [JsonPropertyName("macAddress")]
     [JsonConverter(typeof(PhysicalAddressJsonConverter))]
     public PhysicalAddress MacAddress { get; set; } = null!;
+}
+
+internal interface ITarget
+{
+    public string NormalizedName { get; }
+    public string Name { get; }
+    public string Host { get; }
+    public int Port { get; }
+    public PhysicalAddress MacAddress { get; }
 }
