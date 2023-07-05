@@ -476,5 +476,8 @@ $RECYCLE.BIN/
 # Rider directories
 .idea/
 
+# VSCode directories
+.vscode
+
 # Windows shortcuts
 *.lnk
