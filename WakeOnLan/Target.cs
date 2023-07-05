@@ -1,16 +1,25 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Net;
-using System.Net.NetworkInformation;
+﻿using System.Net.NetworkInformation;
+using System.Text.Json.Serialization;
+
+// ReSharper disable PropertyCanBeMadeInitOnly.Global
 
 namespace WakeOnLan;
 
-public class Target
+internal class Target
 {
-    [Key]
-    public string NormalizedName { get; init; }
-    public string Name { get; init; }
-    public string Host { get; init; }
-    public int Port { get; init; }
-    public PhysicalAddress MacAddress { get; init; }
-    
+    [JsonPropertyName("normalizedName")]
+    public string NormalizedName { get; set; } = null!;
+
+    [JsonPropertyName("name")]
+    public string Name { get; set; } = null!;
+
+    [JsonPropertyName("host")]
+    public string Host { get; set; } = null!;
+
+    [JsonPropertyName("port")]
+    public int Port { get; set; }
+
+    [JsonPropertyName("macAddress")]
+    [JsonConverter(typeof(PhysicalAddressJsonConverter))]
+    public PhysicalAddress MacAddress { get; set; } = null!;
 }

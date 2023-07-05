@@ -1,6 +1,6 @@
 ﻿namespace WakeOnLan;
 
-public class InvalidInputException : Exception
+internal class InvalidInputException : Exception
 {
     public string? Input { get; }
 

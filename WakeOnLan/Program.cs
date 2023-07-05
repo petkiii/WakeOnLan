@@ -1,27 +1,26 @@
 ﻿namespace WakeOnLan
 {
-    public static class Program
+    internal static class Program
     {
-        private static readonly Option Back = new("Back", Console.Clear, true);
+        private static readonly Option Back = new Option("Back", Console.Clear, true);
 
         private static void Main()
         {
             Console.Title = "WakeOnLan";
 
-            var context = new DataContext();
-            context.Database.EnsureCreated();
+            Data.EnsureCreated();
+            Data.Load();
 
-            var mainMenuOptions = GetMainMenuOptions(context);
+            var mainMenuOptions = GetMainMenuOptions();
             var mainMenu = Menu.CreateMenu(mainMenuOptions);
 
             mainMenu.RunMenu();
         }
 
-        private static Menu GetDeleteMenu(DataContext context)
+        private static Menu GetDeleteMenu()
         {
-            var options = context.Targets
-                .ToList()
-                .Select(x => new Option(x.Name, () => TargetManager.DeleteTarget(context, x), true))
+            var options = Data.Targets.Values
+                .Select(x => new Option(x.Name, () => TargetManager.DeleteTarget(x), true))
                 .Append(Back)
                 .ToArray();
             var deleteMenu = Menu.CreateMenu(options);
@@ -29,10 +28,9 @@
             return deleteMenu;
         }
 
-        private static Menu GetWakeMenu(DataContext context)
+        private static Menu GetWakeMenu()
         {
-            var options = context.Targets
-                .ToList()
+            var options = Data.Targets.Values
                 .Select(x => new Option(x.Name, x.Wake))
                 .Append(Back)
                 .ToArray();
@@ -41,12 +39,17 @@
             return wakeMenu;
         }
 
-        private static Option[] GetMainMenuOptions(DataContext context) =>
+        private static Option[] GetMainMenuOptions() =>
             new[]
             {
-                new Option("Wake", () => GetWakeMenu(context).RunMenu()),
-                new Option("Add", () => TargetManager.AddTarget(context)),
-                new Option("Remove", () => GetDeleteMenu(context).RunMenu()),
+                new Option("Wake", () => GetWakeMenu().RunMenu()),
+                new Option("Add", () =>
+                {
+                    Console.CursorVisible = true;
+                    TargetManager.AddTarget();
+                    Console.CursorVisible = false;
+                }),
+                new Option("Remove", () => GetDeleteMenu().RunMenu()),
                 new Option("Exit", () => Environment.Exit(0)),
             };
     }

@@ -2,9 +2,9 @@
 
 namespace WakeOnLan;
 
-public static class TargetManager
+internal static class TargetManager
 {
-    public static void AddTarget(DataContext context)
+    public static void AddTarget()
     {
         try
         {
@@ -45,8 +45,8 @@ public static class TargetManager
                 MacAddress = macAddress
             };
 
-            context.Add(target);
-            context.SaveChanges();
+            Data.Add(target);
+            Data.SaveChanges();
         }
         catch (InvalidInputException e)
         {
@@ -62,12 +62,12 @@ public static class TargetManager
         }
     }
 
-    public static void DeleteTarget(DataContext context, Target target)
+    public static void DeleteTarget(Target target)
     {
         try
         {
-            context.Remove(target);
-            context.SaveChanges();
+            Data.Remove(target);
+            Data.SaveChanges();
         }
         catch (Exception e)
         {

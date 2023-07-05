@@ -1,10 +1,9 @@
-﻿using System.Globalization;
-using System.Net;
+﻿using System.Net;
 using System.Net.Sockets;
 
 namespace WakeOnLan;
 
-public static class WakeOnLan
+internal static class WakeOnLan
 {
     public static void Wake(this Target target)
     {
@@ -24,7 +23,7 @@ public static class WakeOnLan
             var magicPacket = header.Concat(data).ToArray();
 
             using var client = new UdpClient();
-            
+
             client.Send(magicPacket, magicPacket.Length, new IPEndPoint(address, target.Port));
         }
         catch (Exception e)
