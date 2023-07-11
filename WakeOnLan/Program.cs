@@ -8,8 +8,8 @@
         {
             Console.Title = "WakeOnLan";
 
-            Data.EnsureCreated();
-            Data.Load();
+            DataManager.EnsureCreated();
+            DataManager.Load();
 
             var mainMenuOptions = GetMainMenuOptions();
             var mainMenu = Menu.CreateMenu(mainMenuOptions);
@@ -19,7 +19,7 @@
 
         private static Menu GetDeleteMenu()
         {
-            var options = Data.Targets
+            var options = DataManager.Targets
                 .Select(x => new Option(x.Name, () => TargetManager.DeleteTarget(x), true))
                 .Append(Back)
                 .ToArray();
@@ -30,7 +30,7 @@
 
         private static Menu GetWakeMenu()
         {
-            var options = Data.Targets
+            var options = DataManager.Targets
                 .Select(x => new Option(x.Name, x.Wake))
                 .Append(Back)
                 .ToArray();

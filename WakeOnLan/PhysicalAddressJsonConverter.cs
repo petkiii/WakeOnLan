@@ -6,11 +6,11 @@ namespace WakeOnLan;
 
 internal sealed class PhysicalAddressJsonConverter : JsonConverter<PhysicalAddress>
 {
-    public override PhysicalAddress? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    public override PhysicalAddress Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         if (!PhysicalAddress.TryParse(reader.GetString()!, out var macAddress))
             throw new JsonException("Unable to convert mac address");
-
+        
         return macAddress;
 
     }  

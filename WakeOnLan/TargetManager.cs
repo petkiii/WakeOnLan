@@ -12,8 +12,8 @@ internal static class TargetManager
             
             var target = PromptAddTarget();
 
-            Data.Add(target);
-            Data.SaveChanges();
+            DataManager.Add(target);
+            DataManager.Save();
         }
         catch (InvalidInputException e)
         {
@@ -73,8 +73,8 @@ internal static class TargetManager
     {
         try
         {
-            Data.Remove(target);
-            Data.SaveChanges();
+            DataManager.Remove(target);
+            DataManager.Save();
         }
         catch (Exception e)
         {

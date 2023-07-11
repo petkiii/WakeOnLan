@@ -7,7 +7,7 @@ namespace WakeOnLan;
     "IL3050:Calling members annotated with \'RequiresDynamicCodeAttribute\' may break functionality when AOT compiling.")]
 [SuppressMessage("Trimming",
     "IL2026:Members annotated with \'RequiresUnreferencedCodeAttribute\' require dynamic access otherwise can break functionality when trimming application code")]
-internal static class Data
+internal static class DataManager
 {
     private const string TargetsFile = "targets.json";
 
@@ -29,21 +29,17 @@ internal static class Data
 
     public static void Add(Target target)
     {
-        if (_dataContainer.Targets!.ContainsKey(target.NormalizedName))
+        if (!_dataContainer.Targets!.TryAdd(target.NormalizedName, target))
             throw new InvalidOperationException("Target already exists.");
-
-        _dataContainer.Targets![target.NormalizedName] = target;
     }
 
     public static void Remove(ITarget target)
     {
-        if (!_dataContainer.Targets!.ContainsKey(target.NormalizedName))
+        if (!_dataContainer.Targets!.Remove(target.NormalizedName))
             throw new InvalidOperationException("Target does not exist.");
-
-        _dataContainer.Targets!.Remove(target.NormalizedName);
     }
 
-    public static void SaveChanges()
+    public static void Save()
     {
         var targets = JsonSerializer.Serialize(_dataContainer, SerializerOptions);
         File.WriteAllText(TargetsFile, targets);
