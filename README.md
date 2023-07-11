@@ -5,7 +5,7 @@
   </a>
 </p>
 
-> Simple WakeOnLan client with interactive cli interface written in C#
+> Simple WakeOnLan client with interactive cli written in C#
 
 <img src="https://i.imgur.com/oE3xNy4.png" />
 
