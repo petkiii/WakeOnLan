@@ -4,98 +4,100 @@ namespace WakeOnLan;
 
 internal class Menu
 {
-	private readonly int _maxWidth;
-	private readonly Option[] _options;
+    private readonly int _maxWidth;
+    private readonly Option[] _options;
 
-	private Menu(Option[] options)
-	{
-		_options = options;
-		_maxWidth = _options.Sum(x => x.Name.Length + 2);
-	}
+    private Menu(Option[] options)
+    {
+        _options = options;
+        _maxWidth = _options.Sum(x => x.Name.Length + 2);
+    }
 
-	public static Menu CreateMenu(Option[] options)
-	{
-		if (options.Length == 0)
-			throw new ArgumentException("Options cannot be empty", nameof(options));
+    public static Menu CreateMenu(Option[] options)
+    {
+        if (options.Length == 0)
+            throw new ArgumentException("Options cannot be empty", nameof(options));
 
-		return new Menu(options);
-	}
+        return new Menu(options);
+    }
 
-	private void DisplayMenu(Option selectedOption)
-	{
-		var length = 0;
-		foreach (var option in _options)
-		{
-			Console.SetCursorPosition((Console.WindowWidth - _maxWidth) / 2 + length, Console.WindowHeight / 2);
-			length += option.Name.Length + 2;
+    private void DisplayMenu(Option selectedOption)
+    {
+        var length = 0;
+        foreach (var option in _options)
+        {
+            Console.SetCursorPosition((Console.WindowWidth - _maxWidth) / 2 + length, Console.WindowHeight / 2);
+            length += option.Name.Length + 2;
 
-			var isSelected = option == selectedOption;
+            var isSelected = option == selectedOption;
 
-			Console.ForegroundColor = isSelected ? ConsoleColor.Black : ConsoleColor.White;
-			Console.BackgroundColor = isSelected ? ConsoleColor.White : ConsoleColor.Black;
+            Console.ForegroundColor = isSelected ? ConsoleColor.Black : ConsoleColor.White;
+            Console.BackgroundColor = isSelected ? ConsoleColor.White : ConsoleColor.Black;
 
-			Console.Write($" {option.Name} ");
-		}
-		
-		  
-		Console.SetCursorPosition(0, 0);
-		Console.ResetColor();
-	}
+            Console.Write($" {option.Name} ");
+        }
 
-	public void RunMenu()
-	{
-		var index = 0;
-		DisplayMenu(_options[index]);
 
-		Console.CursorVisible = false;
-		Console.OutputEncoding = Encoding.Unicode;
+        Console.SetCursorPosition(0, 0);
+        Console.ResetColor();
+    }
 
-		do
-		{
-			var key = Console.ReadKey(true);
-			var update = true;
-			var stop = false;
+    public void RunMenu()
+    {
+        var index = 0;
+        DisplayMenu(_options[index]);
 
-			switch (key.Key)
-			{
-				case ConsoleKey.RightArrow:
-					index = index == _options.Length - 1 ? 0 : index + 1;
-					break;
+        Console.CursorVisible = false;
+        Console.OutputEncoding = Encoding.Unicode;
 
-				case ConsoleKey.LeftArrow:
-					index = index == 0 ? _options.Length - 1 : index - 1;
-					break;
+        do
+        {
+            var key = Console.ReadKey(true);
+            var update = true;
+            var stop = false;
 
-				case ConsoleKey.Enter:
-					Console.Clear();
-					_options[index].Action?.Invoke();
-					stop = _options[index].Stop;
-					break;
+            switch (key.Key)
+            {
+                case ConsoleKey.RightArrow:
+                    index = index == _options.Length - 1 ? 0 : index + 1;
 
-				default:
-					update = false;
-					break;
-			}
+                    break;
 
-			if (stop)
-				break;
+                case ConsoleKey.LeftArrow:
+                    index = index == 0 ? _options.Length - 1 : index - 1;
+                    break;
 
-			if (update)
-				DisplayMenu(_options[index]);
-		} while (true);
-	}
+                case ConsoleKey.Enter:
+                    Console.Clear(); //TODO not needed
+                    _options[index].Action?.Invoke();
+                    stop = _options[index].Stop;
+                    break;
+
+                default:
+                    update = false;
+                    break;
+            }
+
+            if (stop)
+                break;
+
+            if (update)
+                DisplayMenu(_options[index]);
+
+        } while (true);
+    }
 }
 
 public class Option
 {
-	public string Name { get; }
-	public Action? Action { get; }
-	public bool Stop { get; }
+    public string Name { get; }
+    public Action? Action { get; }
+    public bool Stop { get; }
 
-	public Option(string name, Action? action = null, bool stop = false)
-	{
-		Name = name;
-		Action = action;
-		Stop = stop;
-	}
+    public Option(string name, Action? action = null, bool stop = false)
+    {
+        Name = name;
+        Action = action;
+        Stop = stop;
+    }
 }
