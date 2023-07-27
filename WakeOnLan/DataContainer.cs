@@ -4,8 +4,7 @@ namespace WakeOnLan;
 
 internal class DataContainer
 {
-	[JsonPropertyName("targets")]
-	public Dictionary<string, Target>? Targets { get; set; }
-	
-	
+    [JsonPropertyName("targets")]
+    public Dictionary<string, Target>? Targets { get; set; }
+
 }

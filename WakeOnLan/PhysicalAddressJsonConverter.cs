@@ -10,13 +10,13 @@ internal sealed class PhysicalAddressJsonConverter : JsonConverter<PhysicalAddre
     {
         if (!PhysicalAddress.TryParse(reader.GetString()!, out var macAddress))
             throw new JsonException("Unable to convert mac address");
-        
+
         return macAddress;
 
-    }  
+    }
 
     public override void Write(Utf8JsonWriter writer, PhysicalAddress value, JsonSerializerOptions options)
     {
-		writer.WriteStringValue(value.ToString());
+        writer.WriteStringValue(value.ToString());
     }
 }
