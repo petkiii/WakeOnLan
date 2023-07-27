@@ -67,7 +67,7 @@ internal class Menu
 					break;
 
 				case ConsoleKey.Enter:
-					// Console.Clear();
+					Console.Clear();
 					_options[index].Action?.Invoke();
 					stop = _options[index].Stop;
 					break;
