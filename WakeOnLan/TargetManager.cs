@@ -6,14 +6,13 @@ internal static class TargetManager
 {
     public static void AddTarget()
     {
+        Console.CursorVisible = true;
         try
         {
-            Console.CursorVisible = true;
-
             var target = PromptAddTarget();
 
-            DataManager.Add(target);
-            DataManager.Save();
+            DataContext.Add(target);
+            DataContext.Save();
         }
         catch (InvalidInputException e)
         {
@@ -69,12 +68,12 @@ internal static class TargetManager
         };
     }
 
-    public static void DeleteTarget(ITarget target)
+    public static void DeleteTarget(Target target)
     {
         try
         {
-            DataManager.Remove(target);
-            DataManager.Save();
+            DataContext.Remove(target);
+            DataContext.Save();
         }
         catch (Exception e)
         {

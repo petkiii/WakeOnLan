@@ -8,17 +8,15 @@ internal static class Program
     {
         Console.Title = "WakeOnLan";
 
-        DataManager.EnsureCreated();
-        DataManager.Load();
+        DataContext.Initialize();
 
         var mainMenu = Menu.CreateMenu(MainMenuOptions);
-
         mainMenu.RunMenu();
     }
 
     private static Menu GetDeleteMenu()
     {
-        var options = DataManager.Targets
+        var options = DataContext.Targets
             .Select(x => new Option(x.Name, () => TargetManager.DeleteTarget(x), true))
             .Append(Back)
             .ToArray();
@@ -29,7 +27,7 @@ internal static class Program
 
     private static Menu GetWakeMenu()
     {
-        var options = DataManager.Targets
+        var options = DataContext.Targets
             .Select(x => new Option(x.Name, x.Wake))
             .Append(Back)
             .ToArray();

@@ -5,7 +5,7 @@ namespace WakeOnLan;
 
 internal static class WakeOnLan
 {
-    public static void Wake(this ITarget target)
+    public static void Wake(this Target target)
     {
         Console.WriteLine("Sending wake...");
 
@@ -22,7 +22,7 @@ internal static class WakeOnLan
         Console.WriteLine("Wake sent.");
     }
 
-    private static void SendWake(ITarget target)
+    private static void SendWake(Target target)
     {
         var header = Enumerable.Repeat(byte.MaxValue, 6);
         var address = Dns.GetHostAddresses(target.Host).First();
