@@ -9,7 +9,7 @@ internal static class TargetManager
         try
         {
             Console.CursorVisible = true;
-            
+
             var target = PromptAddTarget();
 
             DataManager.Add(target);
