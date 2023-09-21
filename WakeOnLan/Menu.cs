@@ -21,40 +21,27 @@ internal class Menu
         return new Menu(options);
     }
 
-    private void DisplayMenu(Option selectedOption)
+
+    private void DisplayMultiLineMenu(Option selectedOption)
     {
-        var length = 0;
-        var line = new List<Option>();
-        var height = 0;
-        foreach (var option in _options)
-        {
-            if ((length += option.Name.Length + 2) > Console.WindowWidth)
-            {
-                DisplayLine(line, selectedOption, height);
-                line.Clear();
-                length = 0;
-                height++;
-            }
+        var linebreaks = GetLinebreaks();
+        for (var i = 0; i < linebreaks.Count; i++)
+            DisplayLine(linebreaks[i], selectedOption, i);
 
-            line.Add(option);
-        }
-
-        DisplayLine(line, selectedOption, height);
-        Console.SetCursorPosition(0, 0);
         Console.ResetColor();
     }
 
-    private static void DisplayLine(List<Option> options, Option selectedOption, int height)
+    private void DisplayLine(Linebreak linebreak, Option selectedOption, int height)
     {
         var length = 0;
-        foreach (var option in options)
+        foreach (var option in linebreak.GetLine(_options))
         {
-            var width = options.Sum(x => x.Name.Length + 2);
-            Console.SetCursorPosition((Console.WindowWidth - width) / 2 + length, Console.WindowHeight / 2 + height);
+            Console.SetCursorPosition((Console.WindowWidth - linebreak.TextLength) / 2 + length,
+                Console.WindowHeight / 2 + height);
 
             length += option.Name.Length + 2;
-            var isSelected = option == selectedOption;
 
+            var isSelected = option == selectedOption;
             Console.ForegroundColor = isSelected ? ConsoleColor.Black : ConsoleColor.White;
             Console.BackgroundColor = isSelected ? ConsoleColor.White : ConsoleColor.Black;
 
@@ -62,10 +49,43 @@ internal class Menu
         }
     }
 
+    private record Linebreak(int StartIndex, int EndIndex, int TextLength)
+    {
+        public ReadOnlySpan<Option> GetLine(Option[] options) =>
+            options.AsSpan(new Range(StartIndex, EndIndex));
+    }
+
+    private List<Linebreak> GetLinebreaks()
+    {
+        var extraLines = _maxWidth / Console.WindowWidth;
+        var lineBreaks = new List<Linebreak>(extraLines + 1);
+
+        var length = 0;
+        var previous = 0;
+        for (var i = 0; i < _options.Length; i++)
+        {
+            var option = _options[i];
+
+            // [i] doesn't fit
+            if (length + option.Name.Length + 2 > Console.WindowWidth)
+            {
+                lineBreaks.Add(new Linebreak(previous, i, length));
+                previous = i;
+                length = 0;
+            }
+
+            length += option.Name.Length + 2;
+        }
+
+        //don't forget the last line
+        lineBreaks.Add(new Linebreak(previous, _options.Length, length));
+        return lineBreaks;
+    }
+
     public void RunMenu()
     {
         var index = 0;
-        DisplayMenu(_options[index]);
+        DisplayMultiLineMenu(_options[index]);
 
         Console.CursorVisible = false;
         Console.OutputEncoding = Encoding.Unicode;
@@ -80,7 +100,6 @@ internal class Menu
             {
                 case ConsoleKey.RightArrow:
                     index = index == _options.Length - 1 ? 0 : index + 1;
-
                     break;
 
                 case ConsoleKey.LeftArrow:
@@ -88,7 +107,8 @@ internal class Menu
                     break;
 
                 case ConsoleKey.Enter:
-                    Console.Clear(); //TODO not needed
+                    Console.Clear();
+
                     _options[index].Action?.Invoke();
                     stop = _options[index].Stop;
                     break;
@@ -102,8 +122,7 @@ internal class Menu
                 break;
 
             if (update)
-                DisplayMenu(_options[index]);
-
+                DisplayMultiLineMenu(_options[index]);
         } while (true);
     }
 }
