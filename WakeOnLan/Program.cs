@@ -2,24 +2,21 @@
 
 internal static class Program
 {
-    private static readonly Option Back = new("Back", stop: true);
+    private static readonly Option Back = new("Back", Console.Clear, true);
 
     private static void Main()
     {
         Console.Title = "WakeOnLan";
 
-        DataManager.EnsureCreated();
-        DataManager.Load();
+        DataContext.Initialize();
 
-        var mainMenuOptions = GetMainMenuOptions();
-        var mainMenu = Menu.CreateMenu(mainMenuOptions);
-
+        var mainMenu = Menu.CreateMenu(MainMenuOptions);
         mainMenu.RunMenu();
     }
 
     private static Menu GetDeleteMenu()
     {
-        var options = DataManager.Targets
+        var options = DataContext.Targets
             .Select(x => new Option(x.Name, () => TargetManager.DeleteTarget(x), true))
             .Append(Back)
             .ToArray();
@@ -30,7 +27,7 @@ internal static class Program
 
     private static Menu GetWakeMenu()
     {
-        var options = DataManager.Targets
+        var options = DataContext.Targets
             .Select(x => new Option(x.Name, x.Wake))
             .Append(Back)
             .ToArray();
@@ -39,12 +36,11 @@ internal static class Program
         return wakeMenu;
     }
 
-    private static Option[] GetMainMenuOptions() =>
-        new[]
-        {
-            new Option("Wake", () => GetWakeMenu().RunMenu()),
-            new Option("Add", () => TargetManager.AddTarget()),
-            new Option("Remove", () => GetDeleteMenu().RunMenu()),
-            new Option("Exit", () => Environment.Exit(0))
-        };
+    private static readonly Option[] MainMenuOptions =
+    {
+        new("Wake", () => GetWakeMenu().RunMenu()),
+        new("Add", () => TargetManager.AddTarget()),
+        new("Remove", () => GetDeleteMenu().RunMenu()),
+        new("Exit", () => Environment.Exit(0))
+    };
 }

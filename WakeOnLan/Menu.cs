@@ -80,6 +80,7 @@ internal class Menu
             {
                 case ConsoleKey.RightArrow:
                     index = index == _options.Length - 1 ? 0 : index + 1;
+
                     break;
 
                 case ConsoleKey.LeftArrow:
@@ -87,8 +88,7 @@ internal class Menu
                     break;
 
                 case ConsoleKey.Enter:
-                    Console.Clear();
-
+                    Console.Clear(); //TODO not needed
                     _options[index].Action?.Invoke();
                     stop = _options[index].Stop;
                     break;
@@ -103,6 +103,7 @@ internal class Menu
 
             if (update)
                 DisplayMenu(_options[index]);
+
         } while (true);
     }
 }
