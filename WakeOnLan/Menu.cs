@@ -24,11 +24,35 @@ internal class Menu
     private void DisplayMenu(Option selectedOption)
     {
         var length = 0;
+        var line = new List<Option>();
+        var height = 0;
         foreach (var option in _options)
         {
-            Console.SetCursorPosition((Console.WindowWidth - _maxWidth) / 2 + length, Console.WindowHeight / 2);
-            length += option.Name.Length + 2;
+            if ((length += option.Name.Length + 2) > Console.WindowWidth)
+            {
+                DisplayLine(line, selectedOption, height);
+                line.Clear();
+                length = 0;
+                height++;
+            }
 
+            line.Add(option);
+        }
+
+        DisplayLine(line, selectedOption, height);
+        Console.SetCursorPosition(0, 0);
+        Console.ResetColor();
+    }
+
+    private static void DisplayLine(List<Option> options, Option selectedOption, int height)
+    {
+        var length = 0;
+        foreach (var option in options)
+        {
+            var width = options.Sum(x => x.Name.Length + 2);
+            Console.SetCursorPosition((Console.WindowWidth - width) / 2 + length, Console.WindowHeight / 2 + height);
+
+            length += option.Name.Length + 2;
             var isSelected = option == selectedOption;
 
             Console.ForegroundColor = isSelected ? ConsoleColor.Black : ConsoleColor.White;
@@ -36,10 +60,6 @@ internal class Menu
 
             Console.Write($" {option.Name} ");
         }
-
-
-        Console.SetCursorPosition(0, 0);
-        Console.ResetColor();
     }
 
     public void RunMenu()
