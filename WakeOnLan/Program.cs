@@ -8,8 +8,6 @@ internal static class Program
     {
         Console.Title = "WakeOnLan";
 
-        DataContext.Initialize();
-
         var mainMenu = Menu.CreateMenu(MainMenuOptions);
         mainMenu.RunMenu();
     }
