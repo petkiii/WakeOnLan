@@ -2,7 +2,7 @@
 
 namespace WakeOnLan;
 
-internal class Menu
+internal sealed class Menu
 {
     private readonly int _maxWidth;
     private readonly Option[] _options;

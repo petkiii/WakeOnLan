@@ -4,21 +4,21 @@ using System.Text.Json.Serialization;
 
 namespace WakeOnLan;
 
-internal record Target
+internal sealed record Target
 {
     [JsonPropertyName("normalizedName")]
-    public string NormalizedName { get; set; } = null!;
+    public required string NormalizedName { get; init; }
 
     [JsonPropertyName("name")]
-    public string Name { get; set; } = null!;
+    public required string Name { get; init; }
 
     [JsonPropertyName("host")]
-    public string Host { get; set; } = null!;
+    public required string Host { get; init; }
 
     [JsonPropertyName("port")]
-    public int Port { get; set; }
+    public required int Port { get; init; }
 
     [JsonPropertyName("macAddress")]
     [JsonConverter(typeof(PhysicalAddressJsonConverter))]
-    public PhysicalAddress MacAddress { get; set; } = null!;
+    public required PhysicalAddress MacAddress { get; init; }
 }

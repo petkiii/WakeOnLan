@@ -2,8 +2,8 @@ using System.Text.Json.Serialization;
 
 namespace WakeOnLan;
 
-internal class DataContainer
+internal sealed record DataContainer
 {
     [JsonPropertyName("targets")]
-    public Dictionary<string, Target>? Targets { get; set; }
+    public Dictionary<string, Target> Targets { get; set; } = new();
 }
