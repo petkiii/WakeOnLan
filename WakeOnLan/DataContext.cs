@@ -14,47 +14,43 @@ internal static class DataContext
     private static readonly JsonSerializerOptions SerializerOptions = new()
     {
         WriteIndented = true,
-        TypeInfoResolver = DataJsonSerializerContext.Default,
+        TypeInfoResolver = DataContainerContext.Default,
         Converters = { new PhysicalAddressJsonConverter() }
     };
 
-    private static DataContainer _dataContainer = null!;
-    public static IEnumerable<Target> Targets => _dataContainer.Targets!.Values;
+    private static readonly DataContainer DataContainer;
+    public static IEnumerable<Target> Targets => DataContainer.Targets.Values;
 
-    public static void Initialize()
+    static DataContext()
     {
         if (!File.Exists(TargetsFile))
         {
-            _dataContainer = new DataContainer
-            {
-                Targets = new Dictionary<string, Target>()
-            };
+            DataContainer = new DataContainer();
             File.WriteAllText(TargetsFile, "{\"Targets\":{}}");
             // Save();
         }
         else
         {
             var data = File.ReadAllText(TargetsFile);
-            _dataContainer = JsonSerializer.Deserialize<DataContainer>(data, SerializerOptions) ?? new DataContainer();
-            _dataContainer.Targets ??= new Dictionary<string, Target>();
+            DataContainer = JsonSerializer.Deserialize<DataContainer>(data, SerializerOptions) ?? new DataContainer();
         }
     }
 
     public static void Add(Target target)
     {
-        if (!_dataContainer.Targets!.TryAdd(target.NormalizedName, target))
+        if (!DataContainer.Targets.TryAdd(target.NormalizedName, target))
             throw new InvalidOperationException("Target already exists.");
     }
 
     public static void Remove(Target target)
     {
-        if (!_dataContainer.Targets!.Remove(target.NormalizedName))
+        if (!DataContainer.Targets.Remove(target.NormalizedName))
             throw new InvalidOperationException("Target does not exist.");
     }
 
     public static void Save()
     {
-        var targets = JsonSerializer.Serialize(_dataContainer, SerializerOptions);
+        var targets = JsonSerializer.Serialize(DataContainer, SerializerOptions);
         File.WriteAllText(TargetsFile, targets);
     }
 }
